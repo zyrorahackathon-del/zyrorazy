@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About — ZYRORA | AI Hackathon by TENSAI</title>
+<meta name="description" content="ZYRORA is the flagship AI Hackathon organized by TENSAI, the Student Technical Association — where innovators build intelligent solutions for tomorrow." />
+ 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+ 
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          paper: '#f7f6f2',
+          paperalt: '#ede9df',
+          ink: '#1a1a1a',
+          muted: '#555555',
+          hair: '#ddd9ce',
+          hairdark: '#2A2A2C'
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          body: ['"Inter"', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+ 
+<style>
+  /* ===== SHARED PREMIUM NAV ===== */
+  :root {
+    --accent: #c9a227;
+    --accent-2: #c9a227;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  .site-nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 200;
+    border-bottom: 1px solid transparent;
+    transition: background .45s cubic-bezier(.16,1,.3,1), border-color .45s ease, backdrop-filter .45s ease;
+  }
+  .site-nav.nav-scrolled {
+    background: rgba(4,4,8,0.55);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom-color: rgba(255,255,255,0.07);
+  }
+  .nav-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 76px;
+  }
+  .nav-logo {
+    display: inline-flex; align-items: center; text-decoration: none;
+    outline-offset: 4px; flex-shrink: 0;
+    transition: opacity .3s ease, transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  .nav-logo:hover { opacity: 0.82; transform: scale(1.03); }
+  .nav-logo img { height: 34px; width: auto; display: block; }
+  .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+  .nav-link {
+    position: relative; font-family: var(--font-body); font-size: 0.875rem;
+    font-weight: 500; letter-spacing: 0.015em; color: rgba(255,255,255,0.62);
+    text-decoration: none; padding: 0.45rem 0.9rem; border-radius: 8px;
+    transition: color .22s ease, background .22s ease; outline-offset: 4px; white-space: nowrap;
+  }
+  .nav-link::after {
+    content: ''; position: absolute; left: 50%; bottom: 4px; width: 0; height: 1.5px;
+    border-radius: 2px; background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    transform: translateX(-50%); transition: width .3s cubic-bezier(.16,.84,.44,1);
+  }
+  .nav-link:hover { color: #fff; background: rgba(255,255,255,0.06); }
+  .nav-link:hover::after { width: calc(100% - 1.8rem); }
+  .nav-link:focus-visible { color: #fff; outline: 2px solid rgba(255,255,255,0.7); }
+  .nav-link.nav-active { color: #fff; }
+  .nav-link.nav-active::after { width: calc(100% - 1.8rem); }
+  .nav-cta {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.02em; color: #000; background: #fff;
+    border: 1px solid rgba(255,255,255,0.9); padding: 0.55rem 1.3rem;
+    border-radius: 9999px; text-decoration: none; cursor: pointer;
+    position: relative; overflow: hidden; flex-shrink: 0; outline-offset: 4px;
+    transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s cubic-bezier(.16,1,.3,1);
+  }
+  .nav-cta::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.45) 50%, transparent 70%);
+    background-size: 220% 100%; background-position: 160% 0;
+    opacity: 0; transition: opacity .25s ease; pointer-events: none;
+  }
+  .nav-cta:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 24px -6px rgba(255,255,255,0.28); }
+  .nav-cta:hover::before { opacity: 1; animation: navCtaSheen .9s ease forwards; }
+  .nav-cta:focus-visible { outline: 2px solid rgba(255,255,255,0.8); }
+  @keyframes navCtaSheen { 0% { background-position: 160% 0; } 100% { background-position: -60% 0; } }
+  .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+  .nav-toggle {
+    display: none; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px; padding: 0; cursor: pointer; width: 42px; height: 42px;
+    align-items: center; justify-content: center; flex-direction: column; gap: 5px;
+    outline-offset: 4px; transition: background .25s ease, border-color .25s ease; flex-shrink: 0;
+  }
+  .nav-toggle:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.22); }
+  .nav-toggle-bar {
+    width: 18px; height: 1.5px; border-radius: 2px; background: #fff;
+    transition: transform .38s cubic-bezier(.16,1,.3,1), opacity .22s ease, width .3s ease;
+    transform-origin: center;
+  }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) { transform: translateY(3.25px) rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) { opacity: 0; width: 0; }
+  .nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(3) { transform: translateY(-3.25px) rotate(-45deg); }
+  @media (max-width: 820px) {
+    .nav-inner { height: 66px; padding: 0 1.25rem; }
+    .nav-toggle { display: inline-flex; }
+    .nav-links { display: none; }
+    .nav-cta.nav-cta-desktop { display: none; }
+    .nav-drawer {
+      position: fixed; top: 66px; left: 0; right: 0; bottom: 0;
+      background: rgba(4,4,10,0.97);
+      backdrop-filter: blur(32px) saturate(160%); -webkit-backdrop-filter: blur(32px) saturate(160%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0; padding: 2rem 2rem 3rem;
+      opacity: 0; pointer-events: none; visibility: hidden;
+      transition: opacity .32s cubic-bezier(.16,1,.3,1), visibility 0s linear .32s;
+      z-index: 199; border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-drawer.is-open { opacity: 1; pointer-events: auto; visibility: visible; transition: opacity .32s cubic-bezier(.16,1,.3,1); }
+    .nav-drawer .nav-drawer-item {
+      width: 100%; max-width: 320px; opacity: 0; transform: translateY(14px);
+      transition: opacity .4s cubic-bezier(.16,1,.3,1), transform .4s cubic-bezier(.16,1,.3,1);
+    }
+    .nav-drawer.is-open .nav-drawer-item:nth-child(1) { opacity:1; transform:translateY(0); transition-delay:60ms; }
+    .nav-drawer.is-open .nav-drawer-item:nth-child(2) { opacity:1; transform:translateY(0); transition-delay:110ms; }
+    .nav-drawer.is-open .nav-drawer-item:nth-child(3) { opacity:1; transform:translateY(0); transition-delay:160ms; }
+    .nav-drawer.is-open .nav-drawer-item:nth-child(4) { opacity:1; transform:translateY(0); transition-delay:210ms; }
+    .nav-drawer-link {
+      display: flex; align-items: center; justify-content: space-between; width: 100%;
+      font-family: var(--font-display); font-size: 1.55rem; font-weight: 600;
+      letter-spacing: -0.02em; color: rgba(255,255,255,0.75); text-decoration: none;
+      padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: color .22s ease; outline-offset: 4px;
+    }
+    .nav-drawer-link:hover, .nav-drawer-link:focus-visible { color: #fff; }
+    .nav-drawer-link svg { opacity: 0; transform: translateX(-6px); transition: opacity .22s ease, transform .3s cubic-bezier(.16,1,.3,1); }
+    .nav-drawer-link:hover svg, .nav-drawer-link:focus-visible svg { opacity: 1; transform: translateX(0); }
+    .nav-drawer-cta { margin-top: 2rem; width: 100%; max-width: 320px; display: flex; justify-content: center; }
+    .nav-drawer-cta .nav-cta { width: 100%; justify-content: center; font-size: 1rem; padding: 0.9rem 2rem; }
+  }
+  @media (min-width: 821px) { .nav-drawer { display: none !important; } }
+ 
+  *{ -webkit-font-smoothing:antialiased; }
+  html{ scroll-behavior:smooth; }
+  body{ background:#f7f6f2; color:#1a1a1a; font-family:'Inter', sans-serif; overflow-x:hidden; }
+ 
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+  }
+ 
+  ::selection{ background:#1a1a1a; color:#fff; }
+  :focus-visible{ outline:2px solid #1a1a1a; outline-offset:3px; border-radius:4px; }
+ 
+  .grain{
+    position:absolute; inset:0; pointer-events:none; opacity:0.03; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+ 
+  /* ---------- Reveal ---------- */
+  .reveal-word{
+    display:inline-block; filter:blur(8px); opacity:0; transform:translateY(18px);
+    transition:filter .7s cubic-bezier(.2,.7,.2,1), opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal-word.in{ filter:blur(0); opacity:1; transform:translateY(0); }
+ 
+  .rise{ opacity:0; transform:translateY(28px); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+  .rise.in{ opacity:1; transform:translateY(0); }
+  .stagger > *{ transition-delay:calc(var(--i) * 90ms); }
+ 
+  /* ---------- Hero ---------- */
+  .hero-wrap{ position:relative; height:100svh; min-height:640px; overflow:hidden; background:#000; }
+  .hero-media{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.08); transform:scale(1.06); transition:transform 1.2s ease-out; }
+  .hero-fallback{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(1200px 700px at 15% 10%, rgba(255,255,255,0.10), transparent 60%),
+      radial-gradient(900px 600px at 85% 85%, rgba(255,255,255,0.06), transparent 55%),
+      linear-gradient(180deg, #050505 0%, #000 100%);
+  }
+  .hero-scrim{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.35) 35%, rgba(0,0,0,.8) 100%); }
+  .hero-vignette{ position:absolute; inset:0; box-shadow: inset 0 0 220px 60px rgba(0,0,0,0.7); }
+ 
+  .scroll-cue{ width:22px; height:36px; border:1.5px solid rgba(255,255,255,0.45); border-radius:14px; position:relative; }
+  .scroll-cue::before{ content:''; position:absolute; top:6px; left:50%; width:3px; height:7px; border-radius:2px; background:#c9a227; transform:translateX(-50%); animation:cueDrop 1.8s ease-in-out infinite; }
+  @keyframes cueDrop{ 0%{ opacity:1; transform:translate(-50%,0);} 60%{ opacity:0; transform:translate(-50%,14px);} 100%{ opacity:0; transform:translate(-50%,14px);} }
+ 
+  /* ---------- Buttons ---------- */
+  .btn-primary{ background:#1a1a1a; color:#fff; font-weight:600; transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s; }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -14px rgba(0,0,0,0.45); }
+  .btn-primary-inverse{ background:#c9a227; color:#fff; font-weight:600; transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s; }
+  .btn-primary-inverse:hover{ transform:translateY(-2px); box-shadow:0 14px 34px -14px rgba(201,162,39,0.45); }
+  .btn-ghost{ border:1px solid #ddd9ce; color:#1a1a1a; transition:border-color .3s, background .3s, transform .3s; }
+  .btn-ghost:hover{ border-color:#1a1a1a; background:#ede9df; transform:translateY(-2px); }
+  .btn-ghost-inverse{ border:1px solid rgba(255,255,255,0.3); color:#fff; transition:border-color .3s, background .3s, transform .3s; }
+  .btn-ghost-inverse:hover{ border-color:#fff; background:rgba(255,255,255,0.08); transform:translateY(-2px); }
+ 
+  /* ---------- Cards ---------- */
+  .card{ background:#fff; border:1px solid #ddd9ce; transition:transform .4s cubic-bezier(.2,.7,.2,1), border-color .4s, box-shadow .4s; }
+  .card:hover{ transform:translateY(-6px); border-color:#c9a227; box-shadow:0 20px 40px -24px rgba(0,0,0,0.25); }
+ 
+  .num-tag{ font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.08em; color:#777060; }
+ 
+  /* ---------- Zigzag image blocks ---------- */
+  .zig-frame{ position:relative; overflow:hidden; background:#ede9df; border:1px solid #ddd9ce; }
+  .zig-frame img{ width:100%; height:100%; object-fit:cover; filter:grayscale(1); transform:scale(1.1) translateY(var(--py,0px)); transition:transform .1s linear; }
+  .zig-frame .zig-fill{ position:absolute; inset:0; }
+ 
+  /* ---------- Node signature graphic (monochrome) ---------- */
+  .node-line{ stroke-dasharray: 4 6; animation:dashFlow 6s linear infinite; }
+  @keyframes dashFlow{ to{ stroke-dashoffset:-200; } }
+  .node-dot{ animation:pulseDot 3.2s ease-in-out infinite; }
+  @keyframes pulseDot{ 0%,100%{ opacity:.45; r:2.6; } 50%{ opacity:1; r:3.6; } } 
+  /* ---------- Stats terminal ---------- */
+  .terminal{ background:#1a1a1a; border:1px solid #2A2A2C; box-shadow:0 30px 80px -30px rgba(0,0,0,.35); color:#fff; }
+  .terminal-dot{ width:10px; height:10px; border-radius:50%; }
+  .cursor-blink{ animation:blink 1.1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+  .stat-num{ font-family:'JetBrains Mono', monospace; font-variant-numeric:tabular-nums; }
+ 
+  /* ---------- Team: small round frames ---------- */
+  .avatar{
+    width:96px; height:96px; border-radius:9999px; overflow:hidden;
+    background:linear-gradient(150deg, #ede9df, #f7f6f2);
+    border:1px solid #ddd9ce;
+    transition:transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s, border-color .4s;
+  }
+  .team-card:hover .avatar{ transform:translateY(-4px) scale(1.03); border-color:#c9a227; box-shadow:0 16px 30px -18px rgba(0,0,0,0.35); }
+  .avatar img{ width:100%; height:100%; object-fit:cover; }
+ 
+  .linkedin-chip{ transition:background .3s, color .3s, transform .3s; }
+  .team-card:hover .linkedin-chip{ background:#c9a227; color:#fff; transform:translateY(-2px); }
+ 
+  /* ---------- Section eyebrow ---------- */
+  .eyebrow{ font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:.14em; color:#777060; }
+  .eyebrow::before{ content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:#1a1a1a; margin-right:8px; vertical-align:middle; }
+  .eyebrow.on-dark{ color:rgba(255,255,255,0.6); }
+  .eyebrow.on-dark::before{ background:#fff; }
+ 
+  .divider{ height:1px; background:linear-gradient(90deg, transparent, #ddd9ce 20%, #ddd9ce 80%, transparent); }
+ 
+  /* ===== PREMIUM FOOTER ===== */
+  #zyrora-footer-grid {
+    display: grid !important;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr !important;
+    gap: 3rem !important;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem 0;
+    box-sizing: border-box;
+  }
+  @media (max-width: 900px) { #zyrora-footer-grid { grid-template-columns: 1fr 1fr !important; } }
+  @media (max-width: 560px) { #zyrora-footer-grid { grid-template-columns: 1fr !important; } }
+  #zyrora-footer-grid > div { min-width: 0; }
+  #zyrora-footer-grid ul { list-style: none !important; margin: 0 !important; padding: 0 !important; }
+
+  @media (max-width: 768px){ .hero-wrap{ min-height:560px; } }
+</style>
+</head>
+ 
+<body class="bg-paper text-ink font-body antialiased selection:bg-ink selection:text-white" style="background:#f7f6f2;">
+ 
+<!-- ============ NAV ============ -->
+<nav class="site-nav" id="siteNav" aria-label="Primary navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo" aria-label="ZYRORA home">
+      <img src="white logo without bg.png" alt="ZYRORA" style="height:64px;width:auto;filter:drop-shadow(0 0 8px rgba(201,162,39,0.3));">
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link" data-nav-link>Home</a>
+      <a href="about.html" class="nav-link nav-active" data-nav-link>About</a>
+      <a href="contact.html" class="nav-link" data-nav-link>Contact</a>
+    </div>
+    <div class="nav-right">
+      <a href="https://forms.gle/eLGFomVJuQYguq7S6" class="nav-cta nav-cta-desktop">
+        Register Now
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navDrawer">
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+        <span class="nav-toggle-bar"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav-drawer" id="navDrawer" role="dialog" aria-modal="true" aria-label="Navigation">
+  <div class="nav-drawer-item"><a href="index.html" class="nav-drawer-link" data-nav-link>Home<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+  <div class="nav-drawer-item"><a href="about.html" class="nav-drawer-link" data-nav-link>About<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+  <div class="nav-drawer-item"><a href="contact.html" class="nav-drawer-link" data-nav-link>Contact<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+  <div class="nav-drawer-item nav-drawer-cta"><a href="https://forms.gle/eLGFomVJuQYguq7S6" class="nav-cta" data-nav-link>Register Now<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="https://forms.gle/eLGFomVJuQYguq7S6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+</div>
+ 
+<!-- ============ HERO (college video) ============ -->
+<section class="hero-wrap">
+  <!-- Replace src below with your college's cinematic campus video -->
+  <video id="heroVideo" class="hero-media" autoplay muted loop playsinline poster="">
+    <source src="https://ik.imagekit.io/csjd5yj49/VID-20260729-WA0021.mp4" type="video/mp4" />
+  </video>
+  <div class="hero-fallback" id="heroFallback"></div>
+  <div class="hero-scrim"></div>
+  <div class="hero-vignette"></div>
+  <div class="grain"></div>
+ 
+  <div class="relative z-10 h-full flex flex-col items-center justify-center text-center px-6 text-white">
+    <p class="eyebrow on-dark mb-6" data-rise>FLAGSHIP AI HACKATHON — TENSAI STUDENT TECHNICAL ASSOCIATION</p>
+ 
+    <h1 class="font-display font-semibold leading-[0.95] tracking-tight text-[13vw] sm:text-[9vw] md:text-[6.2vw] lg:text-[5.4vw]" data-split>
+      ABOUT ZYRORA
+    </h1>
+ 
+    <p class="mt-6 font-display text-lg md:text-2xl text-white/85" data-split>
+      Flagship AI Hackathon by TENSAI
+    </p>
+ 
+    <p class="mt-6 max-w-xl text-[15px] md:text-base text-white/65 leading-relaxed rise" data-rise>
+      Driven by the vision of TENSAI, ZYRORA is more than a hackathon — it's a platform where innovators, developers, researchers, and creators come together to build intelligent solutions for tomorrow.
+    </p>
+ 
+    <a href="#zyrora" class="mt-10 inline-flex items-center gap-2 px-7 py-3.5 rounded-full btn-primary-inverse rise" data-rise>
+      Discover Our Story
+      <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M6 2V10M6 10L9.5 6.5M6 10L2.5 6.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+ 
+  <div class="absolute bottom-8 inset-x-0 flex flex-col items-center gap-3 z-10">
+    <span class="scroll-cue"></span>
+    <span class="text-[11px] tracking-[.2em] text-white/60 font-mono">SCROLL</span>
+  </div>
+  
+</section>
+ <!-- Faculty Coordinators -->
+    <div class="mb-16 mt-16">
+      <h3 class="font-mono text-xs tracking-[.14em] text-muted mb-8">FACULTY COORDINATORS</h3>
+      <div class="flex flex-wrap justify-center gap-8">
+        <div class="team-card rise text-center" data-rise style="--i:0;width:180px;">
+          <div class="avatar mx-auto mb-4"><img src="gemini.png" alt="Mrs. Thanga Rakku. V" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Mrs.Thanga Rakku.V </h4>
+          <p class="text-muted text-xs mb-3">Faculty Coordinator</p>
+          <a href="#" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        <div class="team-card rise text-center" data-rise style="--i:2;width:180px;">
+          <div class="avatar mx-auto mb-4"><img src="WhatsApp%20Image%202026-07-29%20at%2012.38.07%20PM.jpeg" alt="Dr. Kamalesh" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Mr.Kamalesh.S</h4>
+          <p class="text-muted text-xs mb-3">Faculty Coordinator</p>
+          <a href="#" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- TENSAI Core Team -->
+    <div class="mb-16">
+      <h3 class="font-mono text-xs tracking-[.14em] text-muted mb-8">TENSAI CORE TEAM</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div class="team-card rise text-center" data-rise style="--i:0">
+          <div class="avatar mx-auto mb-4"><img src="Amarnath.jpeg" alt="Student Name" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Amarnath M</h4>
+          <p class="text-muted text-xs mb-3">President, TENSAI</p>
+          <a href="#" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        <div class="team-card rise text-center" data-rise style="--i:1">
+          <div class="avatar mx-auto mb-4"><img src="WhatsApp%20Image%202026-07-28%20at%209.51.30%20PM.jpeg" alt="Antony Anis" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Antony Anis A</h4>
+          <p class="text-muted text-xs mb-3">Vice President, TENSAI</p>
+          <a href="#" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        <div class="team-card rise text-center" data-rise style="--i:2">
+          <div class="avatar mx-auto mb-4"><img src="IMG_0940.PNG" alt="Anandha Kumar" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Anandha Kumar S</h4>
+          <p class="text-muted text-xs mb-3">Secretary, TENSAI</p>
+          <a href="#" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        <div class="team-card rise text-center" data-rise style="--i:3">
+          <div class="avatar mx-auto mb-4"><img src="WhatsApp Image 2026-07-29 at 1.49.37 PM.jpeg" alt="R.K.Kishore" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">R.K Kishore</h4>
+          <p class="text-muted text-xs mb-3">Join Secretary, TENSAI</p>
+          <a href="https://www.linkein.com/in/kishore-r-k-022a17339?utm_source=share_via&utm_content=profile&utm_medium=member_android" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        </div>
+    </div>
+ 
+    <!-- ZYRORA Organizing Committee -->
+    <div>
+      <h3 class="font-mono text-xs tracking-[.14em] text-muted mb-8">ZYRORA ORGANIZING COMMITTEE</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div class="team-card rise text-center" data-rise style="--i:0">
+          <div class="avatar mx-auto mb-4"><img src="WhatsApp%20Image%202026-07-28%20at%209.51.30%20PM.jpeg" alt="Antony Anis" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Antony Anis A</h4>
+          <p class="text-muted text-xs mb-3">Overall Coordinator </p>
+          <a href="#" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        <div class="team-card rise text-center" data-rise style="--i:1">
+          <div class="avatar mx-auto mb-4"><img src="priyan.jpeg" alt="Priyan M" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Priyan M</h4>
+          <p class="text-muted text-xs mb-3">Overall Coordinator</p>
+          <a href="#" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        <div class="team-card rise text-center" data-rise style="--i:2">
+          <div class="avatar mx-auto mb-4"><img src="Arun 3.jpeg" alt="Arun Kumar T" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Arun Kumar T</h4>
+          <p class="text-muted text-xs mb-3">Media Team</p>
+          <a href="https://www.linkedin.com/in/arunkumar-t-/" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        <div class="team-card rise text-center" data-rise style="--i:3">
+          <div class="avatar mx-auto mb-4"><img src="bala.jpeg" alt="Balamurali K" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Balamurali K</h4>
+          <p class="text-muted text-xs mb-3">Media &amp; Design</p>
+          <a href="https://www.linkedin.com/in/balamurali-k-769341392?utm_source=share_via&utm_content=profile&utm_medium=member_android" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+        <div class="team-card rise text-center" data-rise style="--i:4">
+          <div class="avatar mx-auto mb-4"><img src="christonimg.jpeg" alt="Christon A" style="width:100%;height:100%;object-fit:cover;"></div>
+          <h4 class="font-display font-semibold text-sm">Christon A</h4>
+          <p class="text-muted text-xs mb-3">Technical</p>
+          <a href="https://www.linkedin.com/in/christon-a-52aa29339?utm_source=share_via&utm_content=profile&utm_medium=member_android" class="linkedin-chip inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border border-hair">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- ============ ABOUT ZYRORA (zigzag: image left / text right) ============ -->
+<section id="zyrora" class="relative py-28 md:py-36 px-6 md:px-10 border-t border-hair">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 md:gap-16 items-center">
+    <div class="order-2 md:order-1 relative rounded-2xl zig-frame aspect-[4/5]" data-parallax>
+      <div class="zig-fill" style="background:
+        radial-gradient(600px 400px at 25% 20%, rgba(0,0,0,0.06), transparent 60%),
+        radial-gradient(500px 400px at 90% 90%, rgba(0,0,0,0.04), transparent 55%),
+        linear-gradient(160deg, #F6F6F7, #FFFFFF);"></div>
+      <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1);" aria-hidden="true">
+        <source src="https://assets.mixkit.co/videos/47048/47048-360.mp4" type="video/mp4">
+      </video>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(247,246,242,0.7) 0%,transparent 60%);pointer-events:none;"></div>
+      <div class="absolute bottom-6 left-6 right-6 font-mono text-[11px] tracking-widest text-ink/50">ZYRORA — FRAME 01</div>
+    </div>
+ 
+    <div class="order-1 md:order-2">
+      <p class="eyebrow mb-5" data-rise>ABOUT ZYRORA</p>
+      <h2 class="font-display font-semibold text-4xl md:text-5xl leading-[1.05] tracking-tight mb-7" data-rise>
+        A platform built<br/>for intelligent<br/>problem-solving.
+      </h2>
+      <div class="space-y-5 text-muted leading-relaxed text-[15px] md:text-base" data-rise>
+        <p>As artificial intelligence began reshaping how the world builds, TENSAI asked a simple question: what if students didn't just study AI, but shaped it? ZYRORA is the answer — a flagship hackathon designed to turn that curiosity into intelligent, working solutions.</p>
+        <p>Over 24 hours, participants from colleges across the country come together to design, build, and ship real AI-driven products — guided by mentors, judged by industry leaders, and fuelled by a shared belief that the best ideas deserve to be built.</p>
+      </div>
+    </div>
+  </div>
+</section> 
+<!-- ============ ABOUT TENSAI (zigzag reversed: text left / image right) ============ -->
+<section class="relative py-28 md:py-36 px-6 md:px-10">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 md:gap-16 items-center mb-20">
+    <div>
+      <p class="eyebrow mb-5" data-rise>ABOUT TENSAI</p>
+      <h2 class="font-display font-semibold text-4xl md:text-5xl leading-[1.05] tracking-tight mb-7" data-rise>
+        The Student<br/>Technical Association.
+      </h2>
+      <div class="space-y-5 text-muted leading-relaxed text-[15px] md:text-base" data-rise>
+        <p>TENSAI exists to make technical excellence a student-led pursuit — built on community, research, and the belief that the best way to learn technology is to build with it.</p>
+        <p>What began as a small circle of students has grown into the institution's driving force for innovation — a community where research, coding, and curiosity are treated as everyday habits, not occasional events.</p>
+      </div>
+    </div>
+ 
+    <div class="relative rounded-2xl zig-frame aspect-[4/5]" data-parallax>
+      <div class="zig-fill" style="background:
+        radial-gradient(600px 400px at 80% 20%, rgba(0,0,0,0.06), transparent 60%),
+        radial-gradient(500px 400px at 10% 90%, rgba(0,0,0,0.04), transparent 55%),
+        linear-gradient(200deg, #F6F6F7, #FFFFFF);"></div>
+      <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1);" aria-hidden="true">
+        <source src="https://assets.mixkit.co/videos/35954/35954-360.mp4" type="video/mp4">
+      </video>
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(247,246,242,0.7) 0%,transparent 60%);pointer-events:none;"></div>
+      <div class="absolute bottom-6 left-6 right-6 font-mono text-[11px] tracking-widest text-ink/50 text-right">TENSAI — FRAME 01</div>
+    </div>
+  </div>
+ 
+  <!-- Feature cards -->
+  <div class="max-w-6xl mx-auto">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger">
+      <div class="card rounded-2xl p-6 rise" data-rise style="--i:0">
+        <div class="w-10 h-10 rounded-xl border border-hair flex items-center justify-center mb-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 9H21.5L15.75 13.2L18 20L12 15.8L6 20L8.25 13.2L2.5 9H9.5L12 2Z" stroke="#0A0A0A" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Student-Led Innovation</h3>
+        <p class="text-muted text-sm leading-relaxed">Every initiative, workshop, and event is conceived and run by students — for students.</p>
+      </div>
+      <div class="card rounded-2xl p-6 rise" data-rise style="--i:1">
+        <div class="w-10 h-10 rounded-xl border border-hair flex items-center justify-center mb-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="6" r="2.5" stroke="#0A0A0A" stroke-width="1.4"/><circle cx="18" cy="6" r="2.5" stroke="#0A0A0A" stroke-width="1.4"/><circle cx="12" cy="18" r="2.5" stroke="#0A0A0A" stroke-width="1.4"/><path d="M8 7.5L11 16M16 7.5L13 16M8.5 6H15.5" stroke="#0A0A0A" stroke-width="1.2"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Technical Communities</h3>
+        <p class="text-muted text-sm leading-relaxed">Focused groups across AI, systems, and design where members learn from one another.</p>
+      </div>
+      <div class="card rounded-2xl p-6 rise" data-rise style="--i:2">
+        <div class="w-10 h-10 rounded-xl border border-hair flex items-center justify-center mb-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 19V5a1 1 0 011-1h9l6 6v9a1 1 0 01-1 1H5a1 1 0 01-1-1z" stroke="#0A0A0A" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 12h8M8 16h5" stroke="#0A0A0A" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Research Culture</h3>
+        <p class="text-muted text-sm leading-relaxed">Encouraging students to read, question, and publish — treating curiosity as a discipline.</p>
+      </div>
+      <div class="card rounded-2xl p-6 rise" data-rise style="--i:3">
+        <div class="w-10 h-10 rounded-xl border border-hair flex items-center justify-center mb-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="12" rx="1.5" stroke="#0A0A0A" stroke-width="1.4"/><path d="M8 20h8M12 16v4" stroke="#0A0A0A" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Workshops</h3>
+        <p class="text-muted text-sm leading-relaxed">Hands-on sessions that turn theory into working code, models, and prototypes.</p>
+      </div>
+      <div class="card rounded-2xl p-6 rise" data-rise style="--i:4">
+        <div class="w-10 h-10 rounded-xl border border-hair flex items-center justify-center mb-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9L12 3z" stroke="#0A0A0A" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 12l9-4.5M12 12v9M12 12L3 7.5" stroke="#0A0A0A" stroke-width="1.4"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Hackathons</h3>
+        <p class="text-muted text-sm leading-relaxed">Time-boxed challenges — like ZYRORA — that push ideas from concept to build.</p>
+      </div>
+      <div class="card rounded-2xl p-6 rise" data-rise style="--i:5">
+        <div class="w-10 h-10 rounded-xl border border-hair flex items-center justify-center mb-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 4h7v7H4V4zM13 4h7v7h-7V4zM4 13h7v7H4v-7z" stroke="#0A0A0A" stroke-width="1.4" stroke-linejoin="round"/><path d="M16.5 16.5l3.5 3.5" stroke="#0A0A0A" stroke-width="1.4" stroke-linecap="round"/><circle cx="16.5" cy="16.5" r="2.4" stroke="#0A0A0A" stroke-width="1.4"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Industry Collaboration</h3>
+        <p class="text-muted text-sm leading-relaxed">Partnerships that bring real mentors, real tools, and real problems to students.</p>
+      </div>
+      <div class="card rounded-2xl p-6 rise" data-rise style="--i:6">
+        <div class="w-10 h-10 rounded-xl border border-hair flex items-center justify-center mb-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke="#0A0A0A" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="12" r="3.2" stroke="#0A0A0A" stroke-width="1.4"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Leadership</h3>
+        <p class="text-muted text-sm leading-relaxed">A rotating student core team that plans, mentors, and runs every initiative.</p>
+      </div>
+      <div class="card rounded-2xl p-6 rise" data-rise style="--i:7">
+        <div class="w-10 h-10 rounded-xl border border-hair flex items-center justify-center mb-5">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="4" height="9" stroke="#0A0A0A" stroke-width="1.4"/><rect x="10" y="6" width="4" height="14" stroke="#0A0A0A" stroke-width="1.4"/><rect x="17" y="3" width="4" height="17" stroke="#0A0A0A" stroke-width="1.4"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Emerging Technologies</h3>
+        <p class="text-muted text-sm leading-relaxed">Staying ahead — from applied AI to the tools shaping the next decade of software.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============ OUR TEAM (zigzag intro + round-frame grid) ============ -->
+<section class="relative py-28 md:py-36 px-6 md:px-10 border-t border-hair">
+  <div class="max-w-6xl mx-auto">
+ 
+    <!-- zigzag intro -->
+    <div class="grid md:grid-cols-2 gap-14 md:gap-16 items-center mb-24">
+      <div>
+        <p class="eyebrow mb-5" data-rise>OUR TEAM</p>
+        <h2 class="font-display font-semibold text-4xl md:text-5xl leading-[1.05] tracking-tight mb-7" data-rise>
+          The people<br/>behind ZYRORA.
+        </h2>
+        <p class="text-muted leading-relaxed text-[15px] md:text-base" data-rise>
+          A small, dedicated group of faculty and students who plan, build, and run ZYRORA from the ground up — bringing TENSAI's mission to life, one hackathon at a time.
+        </p>
+      </div>
+ 
+      <div class="relative rounded-2xl zig-frame aspect-[4/5]" data-parallax>
+        <div class="zig-fill" style="background:
+          radial-gradient(600px 400px at 20% 20%, rgba(0,0,0,0.06), transparent 60%),
+          radial-gradient(500px 400px at 90% 90%, rgba(0,0,0,0.04), transparent 55%),
+          linear-gradient(160deg, #F6F6F7, #FFFFFF);"></div>
+        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1);" aria-hidden="true">
+          <source src="https://assets.mixkit.co/videos/4809/4809-360.mp4" type="video/mp4">
+        </video>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(247,246,242,0.7) 0%,transparent 60%);pointer-events:none;"></div>
+        <div class="absolute bottom-6 left-6 right-6 font-mono text-[11px] tracking-widest text-ink/50">TEAM — FRAME 01</div>
+      </div>
+    </div>
+ 
+   
+ 
+<!-- ============ VISION & MISSION (inverted, signature moment) ============ -->
+<section class="relative py-28 md:py-36 px-6 md:px-10 bg-ink text-white overflow-hidden" style="background:#1a1a1a;">
+  <div class="grain"></div>
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-6 relative">
+    <div class="rounded-3xl p-9 md:p-12 border border-white/12 rise" data-rise>
+      <span class="eyebrow on-dark mb-6 block">OUR VISION</span>
+      <h3 class="font-display font-semibold text-3xl md:text-[2.2rem] tracking-tight mb-5">Cultivating the innovators of tomorrow.</h3>
+      <p class="text-white/60 leading-relaxed text-[15px] md:text-base">To cultivate future innovators by providing opportunities that encourage creativity, technical excellence, collaboration, and real-world problem solving through Artificial Intelligence and emerging technologies.</p>
+    </div>
+    <div class="rounded-3xl p-9 md:p-12 border border-white/12 rise" data-rise style="--i:1">
+      <span class="eyebrow on-dark mb-6 block">OUR MISSION</span>
+      <h3 class="font-display font-semibold text-3xl md:text-[2.2rem] tracking-tight mb-5">Turning practice into real experience.</h3>
+      <p class="text-white/60 leading-relaxed text-[15px] md:text-base">To empower students with practical technical experience, industry exposure, innovation challenges, and collaborative learning through initiatives organized by TENSAI and flagship events like ZYRORA.</p>
+    </div>
+  </div>
+</section>
+ 
+<!-- ============ WHY ZYRORA ============ -->
+<section class="relative py-28 md:py-36 px-6 md:px-10 border-t border-hair">
+  <div class="max-w-6xl mx-auto">
+    <div class="max-w-2xl mb-16">
+      <p class="eyebrow mb-5" data-rise>WHY ZYRORA</p>
+      <h2 class="font-display font-semibold text-4xl md:text-5xl tracking-tight" data-rise>Built for builders.</h2>
+    </div>
+ 
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 stagger">
+      <div class="card rounded-2xl p-7 rise" data-rise style="--i:0">
+        <span class="num-tag">01</span>
+        <h3 class="font-display font-semibold text-xl mt-4 mb-2">AI Innovation</h3>
+        <p class="text-muted text-sm leading-relaxed">A hackathon built entirely around applied artificial intelligence and real problem statements.</p>
+      </div>
+      <div class="card rounded-2xl p-7 rise" data-rise style="--i:1">
+        <span class="num-tag">02</span>
+        <h3 class="font-display font-semibold text-xl mt-4 mb-2">Industry Mentorship</h3>
+        <p class="text-muted text-sm leading-relaxed">Direct guidance from engineers and researchers working on today's AI frontier.</p>
+      </div>
+      <div class="card rounded-2xl p-7 rise" data-rise style="--i:2">
+        <span class="num-tag">03</span>
+        <h3 class="font-display font-semibold text-xl mt-4 mb-2">National Collaboration</h3>
+        <p class="text-muted text-sm leading-relaxed">Teams from colleges across the country building side by side, in person.</p>
+      </div>
+      <div class="card rounded-2xl p-7 rise" data-rise style="--i:3">
+        <span class="num-tag">04</span>
+        <h3 class="font-display font-semibold text-xl mt-4 mb-2">Hands-on Learning</h3>
+        <p class="text-muted text-sm leading-relaxed">Twenty-four hours of building, not lectures — learning that comes from doing.</p>
+      </div>
+      <div class="card rounded-2xl p-7 rise" data-rise style="--i:4">
+        <span class="num-tag">05</span>
+        <h3 class="font-display font-semibold text-xl mt-4 mb-2">Research Culture</h3>
+        <p class="text-muted text-sm leading-relaxed">Grounded in TENSAI's tradition of curiosity, depth, and technical rigor.</p>
+      </div>
+      <div class="card rounded-2xl p-7 rise" data-rise style="--i:5">
+        <span class="num-tag">06</span>
+        <h3 class="font-display font-semibold text-xl mt-4 mb-2">Future Technologies</h3>
+        <p class="text-muted text-sm leading-relaxed">A front-row seat to the tools and techniques defining the next wave of software.</p>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+
+<!-- ============ FINAL CTA ============ -->
+<section id="register" class="relative py-32 md:py-44 px-6 md:px-10 overflow-hidden border-t border-hair bg-ink text-white" style="background:#1a1a1a;">
+  <div class="grain"></div>
+  <div class="relative max-w-3xl mx-auto text-center">
+    <p class="eyebrow on-dark mb-6 justify-center flex" data-rise>JOIN THE MOVEMENT</p>
+    <h2 class="font-display font-semibold text-4xl md:text-6xl tracking-tight leading-[1.05] mb-6" data-rise>
+      Join TENSAI.<br/>Build with ZYRORA.
+    </h2>
+    <p class="text-white/60 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-10" data-rise>
+      Become part of a vibrant technical community where ideas become innovations and students become future technology leaders.
+    </p>
+    <a href="https://forms.gle/eLGFomVJuQYguq7S6" class="inline-flex items-center gap-2 px-9 py-4 rounded-full btn-primary-inverse text-base rise" data-rise>
+      Register Now
+      <svg width="15" height="15" viewBox="0 0 12 12" fill="none"><path d="M2 6H10M10 6L6.5 2.5M10 6L6.5 9.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</section>
+ 
+<!-- ============ FOOTER ============ -->
+  <footer aria-label="ZYRORA footer" style="background:#111111; color:#fff; border-top:1px solid rgba(255,255,255,0.07); font-family:'Inter',sans-serif;">
+    <div id="zyrora-footer-grid">
+      <div>
+        <a href="index.html" style="display:inline-flex; align-items:center; text-decoration:none; margin-bottom:1.2rem;"><img src="logo.png" alt="ZYRORA" style="height:32px; width:auto;"></a>
+        <p style="color:rgba(255,255,255,0.52); font-size:0.88rem; line-height:1.7; max-width:26ch; margin:0 0 1.6rem;">The flagship AI Hackathon by TENSAI &mdash; where innovators build intelligent solutions for tomorrow.</p>
+        <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
+          <a href="#" aria-label="Instagram" style="width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseover="this.style.borderColor='#c9a227';this.style.color='#c9a227'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.6)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c2.7 0 3 0 4.1.06 1.1.05 1.8.22 2.4.46.65.26 1.2.6 1.7 1.1.5.5.85 1.05 1.1 1.7.25.6.4 1.3.46 2.4.06 1.1.06 1.4.06 4.1s0 3-.06 4.1c-.05 1.1-.22 1.8-.46 2.4-.26.65-.6 1.2-1.1 1.7-.5.5-1.05.85-1.7 1.1-.6.25-1.3.4-2.4.46-1.1.06-1.4.06-4.1.06s-3 0-4.1-.06c-1.1-.05-1.8-.22-2.4-.46a4.6 4.6 0 0 1-1.7-1.1 4.6 4.6 0 0 1-1.1-1.7c-.25-.6-.4-1.3-.46-2.4C3.8 15 3.8 14.7 3.8 12s0-3 .06-4.1c.05-1.1.22-1.8.46-2.4.26-.65.6-1.2 1.1-1.7.5-.5 1.05-.85 1.7-1.1.6-.25 1.3-.4 2.4-.46C9 2.2 9.3 2.2 12 2.2Zm0 1.8c-2.66 0-2.97 0-4.02.06-.97.04-1.5.2-1.85.34-.46.18-.8.4-1.14.75-.35.34-.57.68-.75 1.14-.14.35-.3.88-.34 1.85C3.8 9.03 3.8 9.34 3.8 12s0 2.97.06 4.02c.04.97.2 1.5.34 1.85.18.46.4.8.75 1.14.34.35.68.57 1.14.75.35.14.88.3 1.85.34 1.05.06 1.36.06 4.02.06s2.97 0 4.02-.06c.97-.04 1.5-.2 1.85-.34.46-.18.8-.4 1.14-.75.35-.34.57-.68.75-1.14.14-.35.3-.88.34-1.85.06-1.05.06-1.36.06-4.02s0-2.97-.06-4.02c-.04-.97-.2-1.5-.34-1.85a3 3 0 0 0-.75-1.14 3 3 0 0 0-1.14-.75c-.35-.14-.88-.3-1.85-.34C14.97 4 14.66 4 12 4Zm0 3.4a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2Zm0 1.8a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6Zm5.9-2a1.08 1.08 0 1 1-2.15 0 1.08 1.08 0 0 1 2.15 0Z"/></svg></a>
+          <a href="#" aria-label="LinkedIn" style="width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseover="this.style.borderColor='#c9a227';this.style.color='#c9a227'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.6)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21H17.4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.86V21H9z"/></svg></a>
+          <a href="#" aria-label="Discord" style="width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseover="this.style.borderColor='#c9a227';this.style.color='#c9a227'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.6)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 5.4A17 17 0 0 0 16 4a12 12 0 0 0-.5 1.1 15.8 15.8 0 0 0-4.9 0A12 12 0 0 0 10 4a17 17 0 0 0-4.3 1.4C3.4 9 2.8 12.5 3 16a17 17 0 0 0 4.9 2.4c.4-.5.7-1.1 1-1.7-.6-.2-1.1-.5-1.6-.8l.4-.3c3 1.4 6.4 1.4 9.4 0l.4.3c-.5.3-1 .6-1.6.8.3.6.6 1.2 1 1.7A17 17 0 0 0 21 16c.3-4-.6-7.4-2.7-10.6ZM9.7 13.9c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8c.9 0 1.6.8 1.6 1.8s-.7 1.8-1.6 1.8Zm4.6 0c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8c.9 0 1.6.8 1.6 1.8s-.7 1.8-1.6 1.8Z"/></svg></a>
+          <a href="#" aria-label="GitHub" style="width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseover="this.style.borderColor='#c9a227';this.style.color='#c9a227'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.6)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.9-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.85-2.35 4.7-4.58 4.94.36.31.68.92.68 1.85v2.75c0 .26.18.58.69.48A10 10 0 0 0 12 2Z"/></svg></a>
+          <a href="#" aria-label="WhatsApp" style="width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);text-decoration:none;" onmouseover="this.style.borderColor='#c9a227';this.style.color='#c9a227'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.6)'"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.34 2 11.7c0 2.86 1.24 5.43 3.24 7.24L4 22l3.28-1.16A10.6 10.6 0 0 0 12 21.4c5.52 0 10-4.34 10-9.7S17.52 2 12 2Zm5.35 13.68c-.23.64-1.15 1.18-1.87 1.34-.5.1-1.15.19-3.34-.72-2.8-1.16-4.6-3.99-4.74-4.18-.14-.19-1.13-1.5-1.13-2.87 0-1.36.72-2.03.97-2.31.25-.28.55-.35.73-.35.18 0 .37 0 .53.01.17.01.4-.06.62.48.23.55.78 1.9.85 2.04.07.14.11.3.02.48-.09.19-.14.3-.28.46-.14.16-.29.36-.42.48-.14.14-.28.29-.12.57.16.28.71 1.18 1.53 1.92 1.05.94 1.94 1.24 2.22 1.38.28.14.44.12.6-.07.16-.19.68-.79.86-1.06.18-.28.36-.23.6-.14.25.09 1.56.74 1.83.87.27.14.45.2.51.31.07.12.07.68-.16 1.32Z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-family:'Space Grotesk',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.38); margin:0 0 1.2rem;">Quick Links</h4>
+        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0.65rem;">
+          <li><a href="index.html" style="color:rgba(255,255,255,0.62); text-decoration:none; font-size:0.9rem;" onmouseover="this.style.color='#c9a227'" onmouseout="this.style.color='rgba(255,255,255,0.62)'">Home</a></li>
+          <li><a href="about.html" style="color:rgba(255,255,255,0.62); text-decoration:none; font-size:0.9rem;" onmouseover="this.style.color='#c9a227'" onmouseout="this.style.color='rgba(255,255,255,0.62)'">About ZYRORA</a></li>
+          <li><a href="index.html#about" style="color:rgba(255,255,255,0.62); text-decoration:none; font-size:0.9rem;" onmouseover="this.style.color='#c9a227'" onmouseout="this.style.color='rgba(255,255,255,0.62)'">Problem Tracks</a></li>
+          <li><a href="contact.html" style="color:rgba(255,255,255,0.62); text-decoration:none; font-size:0.9rem;" onmouseover="this.style.color='#c9a227'" onmouseout="this.style.color='rgba(255,255,255,0.62)'">Contact</a></li>
+          <li><a href="https://forms.gle/eLGFomVJuQYguq7S6" style="color:rgba(255,255,255,0.62); text-decoration:none; font-size:0.9rem;" onmouseover="this.style.color='#c9a227'" onmouseout="this.style.color='rgba(255,255,255,0.62)'">Register Now</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:'Space Grotesk',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.38); margin:0 0 1.2rem;">Contact</h4>
+        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0.9rem;">
+          <li style="display:flex; gap:0.7rem; align-items:flex-start;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c9a227" stroke-width="1.8" style="flex-shrink:0; margin-top:2px;"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><a href="mailto:hello@zyrorahackathon.in" style="color:rgba(255,255,255,0.62); text-decoration:none; font-size:0.88rem;" onmouseover="this.style.color='#c9a227'" onmouseout="this.style.color='rgba(255,255,255,0.62)'">hello@zyrorahackathon.in</a></li>
+          <li style="display:flex; gap:0.7rem; align-items:flex-start;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c9a227" stroke-width="1.8" style="flex-shrink:0; margin-top:2px;"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 2.9a2 2 0 0 1-.4 2.1L8.1 10a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.4 1.9.6 2.9.7a2 2 0 0 1 1.7 2Z"/></svg><a href="tel:+919876543210" style="color:rgba(255,255,255,0.62); text-decoration:none; font-size:0.88rem;" onmouseover="this.style.color='#c9a227'" onmouseout="this.style.color='rgba(255,255,255,0.62)'">+91 98765 43210</a></li>
+          <li style="display:flex; gap:0.7rem; align-items:flex-start;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c9a227" stroke-width="1.8" style="flex-shrink:0; margin-top:2px;"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span style="color:rgba(255,255,255,0.62); font-size:0.88rem; line-height:1.5;">AAA College of Engineering &amp; Technology<br>Tamil Nadu, India</span></li>
+          <li style="display:flex; gap:0.7rem; align-items:flex-start;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c9a227" stroke-width="1.8" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span style="color:rgba(255,255,255,0.62); font-size:0.88rem;">Mon &ndash; Sat, 9 AM &ndash; 7 PM IST</span></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:'Space Grotesk',sans-serif; font-size:0.78rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.38); margin:0 0 1.2rem;">Stay Updated</h4>
+        <p style="color:rgba(255,255,255,0.52); font-size:0.86rem; line-height:1.6; margin:0 0 1rem;">Get hackathon updates, track announcements, and registration reminders.</p>
+        <form onsubmit="event.preventDefault(); this.querySelector('input').value=''; this.querySelector('button').textContent='&#10003; Subscribed!';" style="display:flex; flex-direction:column; gap:0.6rem;">
+          <input type="email" placeholder="your@email.com" required style="background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:0.7rem 1rem; color:#fff; font-size:0.88rem; font-family:'Inter',sans-serif; outline:none;" onfocus="this.style.borderColor='#c9a227'" onblur="this.style.borderColor='rgba(255,255,255,0.14)'">
+          <button type="submit" style="background:#c9a227; color:#fff; border:none; border-radius:10px; padding:0.7rem 1rem; font-size:0.88rem; font-weight:600; font-family:'Inter',sans-serif; cursor:pointer;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div style="max-width:1200px; margin:3rem auto 0; padding:0 2rem;">
+      <div style="border-radius:16px; overflow:hidden; border:1px solid rgba(255,255,255,0.08); height:260px; position:relative;">
+        <iframe title="AAA College of Engineering &amp; Technology location" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3934.309006341352!2d77.87024459999999!3d9.568609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b06d3bc7b84dc6b%3A0xfec08b3a0d3caa76!2sAAA%20College%20of%20Engineering%20%26%20Technology!5e0!3m2!1sen!2sin!4v1785220264327!5m2!1sen!2sin" width="100%" height="100%" style="border:0; filter:grayscale(0.2) invert(0.9) hue-rotate(180deg) brightness(0.85) contrast(1.1);" loading="lazy" referrerpolicy="no-referrer-when-downgrade" aria-label="Map showing AAA College of Engineering &amp; Technology"></iframe>
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=AAA%20College%20of%20Engineering%20%26%20Technology" target="_blank" rel="noopener noreferrer" style="position:absolute; bottom:14px; right:14px; background:#c9a227; color:#fff; text-decoration:none; font-size:0.8rem; font-weight:600; font-family:'Inter',sans-serif; padding:0.5rem 1rem; border-radius:999px; display:flex; align-items:center; gap:0.4rem;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Get Directions</a>
+      </div>
+    </div>
+    <div style="max-width:1200px; margin:2.5rem auto 0; padding:0 2rem;"><div style="height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.1) 20%, rgba(255,255,255,0.1) 80%, transparent);"></div></div>
+    <div style="max-width:1200px; margin:0 auto; padding:1.5rem 2rem 2rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem;">
+      <p style="color:rgba(255,255,255,0.35); font-size:0.82rem; margin:0;">&copy; 2026 ZYRORA &mdash; TENSAI Student Technical Association. All rights reserved.</p>
+      <div style="display:flex; gap:1.5rem; flex-wrap:wrap;">
+        <a href="#" style="color:rgba(255,255,255,0.35); text-decoration:none; font-size:0.82rem;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Privacy Policy</a>
+        <a href="#" style="color:rgba(255,255,255,0.35); text-decoration:none; font-size:0.82rem;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Terms of Use</a>
+        <a href="contact.html" style="color:rgba(255,255,255,0.35); text-decoration:none; font-size:0.82rem;" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Contact</a>
+      </div>
+    </div>
+
+  </footer>
+ 
+<script>
+(function(){
+  "use strict";
+ 
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ 
+  function splitWords(el){
+    var text = el.textContent.trim();
+    var words = text.split(/\s+/);
+    el.innerHTML = '';
+    words.forEach(function(w, i){
+      var span = document.createElement('span');
+      span.className = 'reveal-word';
+      span.style.transitionDelay = (i * 60) + 'ms';
+      span.textContent = w;
+      el.appendChild(span);
+      el.appendChild(document.createTextNode(' '));
+    });
+  }
+  document.querySelectorAll('[data-split]').forEach(splitWords);
+ 
+  function revealHero(){
+    document.querySelectorAll('.hero-wrap .reveal-word').forEach(function(el){ el.classList.add('in'); });
+    document.querySelectorAll('.hero-wrap [data-rise]').forEach(function(el){ el.classList.add('in'); });
+  }
+  window.addEventListener('load', function(){ setTimeout(revealHero, 150); });
+ 
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var el = entry.target;
+        el.classList.add('in');
+        if(el.querySelectorAll){
+          el.querySelectorAll('.reveal-word').forEach(function(w){ w.classList.add('in'); });
+        }
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
+ 
+  document.querySelectorAll('[data-rise]').forEach(function(el){
+    if(!el.closest('.hero-wrap')){
+      el.classList.add('rise');
+      observer.observe(el);
+    }
+  });
+ 
+  var hero = document.querySelector('.hero-wrap');
+  var heroMedia = document.querySelector('.hero-media');
+  var heroContent = hero ? hero.querySelector('.relative.z-10') : null;
+ 
+  function onScrollHero(){
+    if(!hero || reduceMotion) return;
+    var rect = hero.getBoundingClientRect();
+    var progress = Math.min(Math.max(-rect.top / (rect.height * 0.9), 0), 1);
+    if(heroContent){
+      heroContent.style.opacity = String(1 - progress);
+      heroContent.style.transform = 'translateY(' + (progress * 40) + 'px)';
+    }
+    if(heroMedia){
+      heroMedia.style.transform = 'scale(' + (1.06 + progress * 0.08) + ')';
+    }
+  }
+ 
+  function onScrollParallax(){
+    if(reduceMotion) return;
+    document.querySelectorAll('[data-parallax]').forEach(function(frame){
+      var rect = frame.getBoundingClientRect();
+      var vh = window.innerHeight;
+      var center = rect.top + rect.height / 2 - vh / 2;
+      var shift = Math.max(Math.min(center * -0.06, 40), -40);
+      frame.style.setProperty('--py', shift + 'px');
+    });
+  }
+ 
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      window.requestAnimationFrame(function(){
+        onScrollHero();
+        onScrollParallax();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+  onScrollHero(); onScrollParallax();
+ 
+  var video = document.getElementById('heroVideo');
+  var fallback = document.getElementById('heroFallback');
+  if(video){
+    video.addEventListener('error', function(){ fallback.style.display = 'block'; video.style.display = 'none'; });
+    video.addEventListener('loadeddata', function(){ fallback.style.display = 'none'; });
+    setTimeout(function(){ if(video.readyState < 2){ fallback.style.display = 'block'; } }, 900);
+  }
+ 
+  var counters = document.querySelectorAll('[data-count]');
+  var counterObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        animateCount(entry.target);
+        counterObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  counters.forEach(function(c){ counterObserver.observe(c); });
+ 
+  function animateCount(el){
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var duration = 1600;
+    var start = null;
+ 
+    if(reduceMotion){ el.textContent = target + suffix; return; }
+ 
+    function step(ts){
+      if(!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var val = Math.floor(eased * target);
+      el.textContent = val + suffix;
+      if(progress < 1){ window.requestAnimationFrame(step); }
+      else { el.textContent = target + suffix; }
+    }
+    window.requestAnimationFrame(step);
+  }
+ 
+})();
+</script>
+ 
+
+<script>
+(function(){
+  'use strict';
+  var siteNav = document.getElementById('siteNav');
+  function updateNav(){ siteNav.classList.toggle('nav-scrolled', window.scrollY > 15); }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+  var navToggle = document.getElementById('navToggle');
+  var navDrawer = document.getElementById('navDrawer');
+  function closeDrawer(){ navDrawer.classList.remove('is-open'); navToggle.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+  function openDrawer(){ navDrawer.classList.add('is-open'); navToggle.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+  navToggle.addEventListener('click', function(){ navToggle.getAttribute('aria-expanded')==='true' ? closeDrawer() : openDrawer(); });
+  document.querySelectorAll('[data-nav-link]').forEach(function(l){ l.addEventListener('click', closeDrawer); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && navToggle.getAttribute('aria-expanded')==='true'){ closeDrawer(); navToggle.focus(); } });
+  window.addEventListener('resize', function(){ if(window.innerWidth>820 && navToggle.getAttribute('aria-expanded')==='true') closeDrawer(); }, { passive:true });
+})();
+</script>
+
+<script>
+(function(){
+  'use strict';
+  var siteNav = document.getElementById('siteNav');
+  function updateNav(){ siteNav.classList.toggle('nav-scrolled', window.scrollY > 15); }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+  var navToggle = document.getElementById('navToggle');
+  var navDrawer = document.getElementById('navDrawer');
+  function closeDrawer(){ navDrawer.classList.remove('is-open'); navToggle.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+  function openDrawer(){ navDrawer.classList.add('is-open'); navToggle.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+  navToggle.addEventListener('click', function(){ navToggle.getAttribute('aria-expanded')==='true' ? closeDrawer() : openDrawer(); });
+  document.querySelectorAll('[data-nav-link]').forEach(function(l){ l.addEventListener('click', closeDrawer); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && navToggle.getAttribute('aria-expanded')==='true'){ closeDrawer(); navToggle.focus(); } });
+  window.addEventListener('resize', function(){ if(window.innerWidth>820 && navToggle.getAttribute('aria-expanded')==='true') closeDrawer(); }, { passive:true });
+})();
+</script>
+</body>
+</html>
