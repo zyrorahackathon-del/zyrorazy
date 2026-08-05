@@ -463,6 +463,25 @@
     opacity: 1;
   }
 
+  .neural-noise-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #030303;
+    pointer-events: none;
+  }
+
+  @media (max-width: 820px) {
+    .neural-noise-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
   .warp-background-wrap::before {
     content: '';
     position: absolute;
@@ -1125,7 +1144,7 @@
       padding: calc(4.6rem + env(safe-area-inset-top)) 1.25rem calc(4.2rem + env(safe-area-inset-bottom));
     }
     .hero-inner {
-      --hero-logo-height: clamp(138px, 42vw, 202px);
+      --hero-logo-height: clamp(170px, 52vw, 250px);
       align-items: center;
       max-width: 360px;
     }
@@ -1171,7 +1190,7 @@
     }
     .warp-background-wrap { inset: 0; perspective: 62px; }
     .hero-content { padding-inline: 1rem; padding-bottom: calc(3.8rem + env(safe-area-inset-bottom)); }
-    .hero-inner { --hero-logo-height: clamp(114px, 37vw, 156px); max-width: 326px; }
+    .hero-inner { --hero-logo-height: clamp(145px, 48vw, 190px); max-width: 326px; }
     .hero-logo-image { height: var(--hero-logo-height) !important; }
     .hero-tagline { font-size: 0.96rem; margin-bottom: 0; }
     .hero-desc { display: none; }
@@ -3489,22 +3508,14 @@
 
   </div>
 
-  <!-- Original ZYRORA warp-beam hero -->
+  <!-- Neural Noise hero -->
   <div id="heroWrapper">
     <section class="hero" id="zyrora-hero" aria-label="ZYRORA hackathon introduction">
-      <div class="warp-background-wrap" id="warpBackground" aria-hidden="true">
-        <div class="warp-plane warp-plane-top" data-warp-plane></div>
-        <div class="warp-plane warp-plane-bottom" data-warp-plane></div>
-        <div class="warp-plane warp-plane-left" data-warp-plane></div>
-        <div class="warp-plane warp-plane-right" data-warp-plane></div>
-        <div class="warp-plane warp-plane-center" data-warp-plane></div>
-      </div>
+      <canvas class="neural-noise-canvas" id="neuralNoiseCanvas" aria-hidden="true"></canvas>
 
       <div class="overlay-flat" id="overlayFlat" aria-hidden="true"></div>
       <div class="overlay-gradient" aria-hidden="true"></div>
       <div class="overlay-vignette" aria-hidden="true"></div>
-      <div class="hero-spotlight" id="heroSpotlight" aria-hidden="true"></div>
-      <div class="hero-particles" id="heroParticles" aria-hidden="true"></div>
 
       <div class="hero-content" id="heroContent">
         <div class="hero-inner">
@@ -3966,7 +3977,7 @@ Connecting Knowledge, Talent, and Industry Excellence.</p>
         <a href="index.html" style="display:inline-flex; align-items:center; text-decoration:none; margin-bottom:0.4rem;">
           <img src="white logo without bg.png" alt="ZYRORA" style="height:clamp(48px,8vw,80px);width:auto;filter:drop-shadow(0 0 16px rgba(201,162,39,0.3));">
         </a>
-        <p style="color:rgba(255,255,255,0.52); font-size:0.88rem; line-height:1.7; max-width:26ch; margin:0 0 1.6rem;">The flagship AI Hackathon by TENSAI — where innovators build intelligent solutions for tomorrow.</p>
+        <p style="color:rgba(255,255,255,0.52); font-size:0.88rem; line-height:1.7; max-width:26ch; margin:0 0 1.6rem;">ZYRORA — where innovators build intelligent solutions for tomorrow.</p>
         <!-- Social icons -->
         <div style="display:flex; gap:0.7rem; flex-wrap:wrap;">
           <a href="https://www.instagram.com/zyrora.official/" aria-label="Instagram" style="width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);transition:border-color .2s,color .2s;text-decoration:none;" onmouseover="this.style.borderColor='#c9a227';this.style.color='#c9a227'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(255,255,255,0.6)'">
@@ -4013,7 +4024,7 @@ Connecting Knowledge, Talent, and Industry Excellence.</p>
           </li>
           <li style="display:flex; gap:0.7rem; align-items:flex-start;">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c9a227" stroke-width="1.8" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-            <span style="color:rgba(255,255,255,0.62); font-size:0.88rem; line-height:1.5;">Mon – Sat, 9 AM – 7 PM IST</span>
+            <span style="color:rgba(255,255,255,0.62); font-size:0.88rem; line-height:1.5;">Mon – Sat, 9 AM – 9 PM IST</span>
           </li>
         </ul>
       </div>
@@ -4062,62 +4073,160 @@ Connecting Knowledge, Talent, and Industry Excellence.</p>
   </footer>
 
   <script>
-    (function initWarpBackgroundHero(){
-      const container = document.getElementById('warpBackground');
-      if (!container) return;
+    (function initNeuralNoiseHero(){
+      const canvas = document.getElementById('neuralNoiseCanvas');
+      if (!canvas) return;
+      const gl = canvas.getContext('webgl', { alpha: false, antialias: true });
+      if (!gl) return;
 
-      const planes = Array.from(container.querySelectorAll('[data-warp-plane]'));
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-      const cellsPerSide = 18;
-      // Keep the full visual density; CSS containment and filter-free glows make
-      // these considerably cheaper to composite, especially on mobile GPUs.
-      const beamCount = 14;
-      const palette = [
-        'rgba(255,255,255,1)',
-        'rgba(201,162,39,0.98)',
-        'rgba(255,210,88,0.92)',
-        'rgba(170,196,255,0.9)'
-      ];
-
-      function randomBetween(min, max) {
-        return min + Math.random() * (max - min);
-      }
-
-      function makeBeam(index) {
-        const beam = document.createElement('span');
-        const cellWidth = 100 / cellsPerSide;
-        const x = Math.floor(Math.random() * cellsPerSide) * cellWidth;
-        const duration = randomBetween(isCoarsePointer ? 4.2 : 2.2, isCoarsePointer ? 7.4 : 4.9);
-        const delay = prefersReducedMotion ? 0 : -randomBetween(0, duration);
-        const color = palette[(index + Math.floor(Math.random() * palette.length)) % palette.length];
-        const widthMultiplier = randomBetween(0.55, index % 5 === 0 ? 2.8 : 1.85);
-        beam.className = 'warp-beam';
-        beam.style.setProperty('--beam-x', `${x}%`);
-        beam.style.setProperty('--beam-width', `${cellWidth * widthMultiplier}%`);
-        beam.style.setProperty('--beam-ratio', `${Math.floor(randomBetween(3, 13))}`);
-        beam.style.setProperty('--beam-duration', `${duration}s`);
-        beam.style.setProperty('--beam-delay', `${delay}s`);
-        beam.style.setProperty('--beam-color', color);
-
-        if (prefersReducedMotion) {
-          beam.style.animation = 'none';
-          beam.style.opacity = '0.72';
-          beam.style.transform = `translateX(-50%) translateY(${randomBetween(18, 82)}vmax)`;
+      const vertexSource = `
+        attribute vec2 a_position;
+        varying vec2 vUv;
+        void main() {
+          vUv = .5 * (a_position + 1.0);
+          gl_Position = vec4(a_position, 0.0, 1.0);
         }
-
-        return beam;
-      }
-
-      planes.forEach((plane, planeIndex) => {
-        plane.innerHTML = '';
-        const cell = 100 / cellsPerSide;
-        plane.style.setProperty('--warp-cell', `${cell}%`);
-        plane.style.setProperty('--warp-major', `${cell * 4}%`);
-        for (let i = 0; i < beamCount; i += 1) {
-          plane.appendChild(makeBeam(i + planeIndex));
+      `;
+      const fragmentSource = `
+        precision mediump float;
+        varying vec2 vUv;
+        uniform float u_time;
+        uniform float u_ratio;
+        uniform vec2 u_pointer_position;
+        vec2 rotate(vec2 uv, float th) {
+          return mat2(cos(th), sin(th), -sin(th), cos(th)) * uv;
         }
-      });
+        float neuro_shape(vec2 uv, float t, float pointerInfluence) {
+          vec2 sine_acc = vec2(0.0);
+          vec2 res = vec2(0.0);
+          float scale = 7.9;
+          for (int j = 0; j < 15; j++) {
+            uv = rotate(uv, 1.0);
+            sine_acc = rotate(sine_acc, 1.0);
+            vec2 layer = uv * scale + float(j) + sine_acc - t;
+            sine_acc += sin(layer) + 2.4 * pointerInfluence;
+            res += (.5 + .5 * cos(layer)) / scale;
+            scale *= 1.18;
+          }
+          return res.x + res.y;
+        }
+        void main() {
+          vec2 uv = .5 * vUv;
+          uv.x *= u_ratio;
+          vec2 pointer = vUv - u_pointer_position;
+          pointer.x *= u_ratio;
+          float influence = .3 * pow(1.0 - clamp(length(pointer), 0.0, 1.0), 2.0);
+          float noise = neuro_shape(uv, u_time, influence);
+          noise = 1.2 * pow(max(noise, 0.0), 3.28);
+          noise += pow(noise, 10.0);
+          noise = max(0.0, noise - .5);
+          noise *= 1.0 - length(vUv - .5);
+          float glow = clamp(noise + influence * .35, 0.0, 1.0);
+          vec3 gold = vec3(.788, .635, .153);
+          vec3 white = vec3(1.0);
+          vec3 color = mix(gold, white, smoothstep(.15, .85, glow));
+          gl_FragColor = vec4(color * glow * 1.18, 1.0);
+        }
+      `;
+      const shader = (type, source) => {
+        const item = gl.createShader(type);
+        gl.shaderSource(item, source);
+        gl.compileShader(item);
+        if (!gl.getShaderParameter(item, gl.COMPILE_STATUS)) {
+          console.warn('Neural Noise shader error:', gl.getShaderInfoLog(item));
+          return null;
+        }
+        return item;
+      };
+      const vertex = shader(gl.VERTEX_SHADER, vertexSource);
+      const fragment = shader(gl.FRAGMENT_SHADER, fragmentSource);
+      if (!vertex || !fragment) return;
+      const program = gl.createProgram();
+      gl.attachShader(program, vertex);
+      gl.attachShader(program, fragment);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+      gl.useProgram(program);
+
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+      const position = gl.getAttribLocation(program, 'a_position');
+      gl.enableVertexAttribArray(position);
+      gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+      const time = gl.getUniformLocation(program, 'u_time');
+      const ratio = gl.getUniformLocation(program, 'u_ratio');
+      const pointerPosition = gl.getUniformLocation(program, 'u_pointer_position');
+      const pointer = { x: .5, y: .5 };
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let visible = true;
+      let width = 0;
+      let height = 0;
+      let animationFrame = null;
+      let elapsed = 0;
+      let previousFrame = performance.now();
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+        const nextWidth = Math.max(2, Math.floor(canvas.clientWidth * dpr));
+        const nextHeight = Math.max(2, Math.floor(canvas.clientHeight * dpr));
+        if (nextWidth !== width || nextHeight !== height) {
+          width = canvas.width = nextWidth;
+          height = canvas.height = nextHeight;
+          gl.viewport(0, 0, width, height);
+        }
+      }
+      function render(now) {
+        if (!visible) {
+          animationFrame = null;
+          return;
+        }
+        resize();
+        elapsed += now - previousFrame;
+        previousFrame = now;
+        gl.uniform1f(time, (reduceMotion ? 0 : elapsed * .0008));
+        gl.uniform1f(ratio, width / height);
+        gl.uniform2f(pointerPosition, pointer.x, 1.0 - pointer.y);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        animationFrame = requestAnimationFrame(render);
+      }
+      function updatePointer(clientX, clientY) {
+        const rect = canvas.getBoundingClientRect();
+        if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) return;
+        pointer.x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        pointer.y = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
+      }
+      window.addEventListener('pointerdown', event => updatePointer(event.clientX, event.clientY), { passive: true });
+      window.addEventListener('pointermove', event => updatePointer(event.clientX, event.clientY), { passive: true });
+      // Explicit touch listeners cover older mobile browsers while remaining
+      // passive, so the effect never blocks native vertical scrolling.
+      window.addEventListener('touchstart', event => {
+        const touch = event.touches[0];
+        if (touch) updatePointer(touch.clientX, touch.clientY);
+      }, { passive: true });
+      window.addEventListener('touchmove', event => {
+        const touch = event.touches[0];
+        if (touch) updatePointer(touch.clientX, touch.clientY);
+      }, { passive: true });
+      window.addEventListener('resize', resize, { passive: true });
+      window.addEventListener('orientationchange', resize, { passive: true });
+      if ('ResizeObserver' in window) new ResizeObserver(resize).observe(canvas);
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(([entry]) => {
+          if (!entry.isIntersecting) {
+            visible = false;
+            if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+            return;
+          }
+          if (!visible || animationFrame === null) {
+            visible = true;
+            previousFrame = performance.now();
+            animationFrame = requestAnimationFrame(render);
+          }
+        }, { threshold: 0.01 }).observe(canvas);
+      }
+      animationFrame = requestAnimationFrame(render);
     })();
   </script>
 
